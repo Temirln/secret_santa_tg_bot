@@ -62,12 +62,12 @@ from db.db import setup_db
 async def start_bot(bot: Bot):
     await set_commands(bot)
     await setup_db()
-    # await bot.send_message(ADMIN_ID, text="Бот Запущен")
+    await bot.send_message(ADMIN_ID, text="Бот Запущен")
 
 
 async def shutdown_bot(bot: Bot):
     pass
-    # await bot.send_message(ADMIN_ID, text="Бот Остановлен")
+    await bot.send_message(ADMIN_ID, text="Бот Остановлен")
 
 
 async def main() -> None:
