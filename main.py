@@ -66,7 +66,7 @@ async def start_bot(bot: Bot):
 
 
 async def shutdown_bot(bot: Bot):
-    pass
+    # pass
     await bot.send_message(ADMIN_ID, text="Бот Остановлен")
 
 

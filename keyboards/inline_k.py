@@ -59,9 +59,9 @@ def get_inline_wishes_list(wishes):
 def get_inline_gift_list(chat_id,wishes):
     keyboard_builder = InlineKeyboardBuilder()
     for wish in wishes:
-        if wish.is_gift_ready:
+        if wish.is_gift_received:
             continue 
-        
+
         keyboard_builder.button(
             text=f"{wish.title}", callback_data=GiftReadyInfo(id=wish.id, title=wish.title,chat = chat_id, receiver = wish.tg_user_id)
         )

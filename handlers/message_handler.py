@@ -7,7 +7,7 @@ import re
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
-from aiogram.utils.markdown import hbold, hlink
+from aiogram.utils.markdown import hbold, hlink,hcode
 from db.crud.event import (
     get_santa_event,
     get_chat_event,
@@ -58,24 +58,22 @@ async def echo_handler(message: Message,bot :Bot) -> None:
 @check_private
 async def get_wish_title(message: Message, state: FSMContext,*args, **kwargs):
     if message.text.title().strip() == "Пропустить Действие":
-        await message.answer(text="Название подарка обяpательна")
+        await message.answer(text="Название подарка обязательна")
         return
-    # await message.reply(text = f"Название твоего подарка {message.text}")
     await state.update_data(title=message.text)
     await state.set_state(StepsForm.GET_wish_short_description)
     await message.answer(
-        text="Теперь можешь ввести короткое описание твоего подарка\nК примеру где его можно найти или как он должен выглядеть:",
+        text=f"Теперь можешь ввести короткое описание для твоего подарка\n\nГде его можно найти или как он должен выглядеть, к примеру \n\n{hcode('Я хочу получить от Тайного Санты стеклянный снежный шар с елкой внутри и ...')}",
         reply_markup=get_reply_wish_next_step_markup()
     )
 
 @check_private
 async def get_wish_short_description(message: Message, state: FSMContext,*args, **kwargs):
     if message.text.strip().title() != "Пропустить Действие":
-        # await message.reply(text = f"Короткое описание твоего подарка: \n{message.text}")
         await state.update_data(desc=message.text)
 
     await state.set_state(StepsForm.GET_wish_link)
-    await message.answer(text = "Если это вещь с интернета можешь скинуть ссылку на подарок чтобы твой санта взял его тебе или посмотрел как подарок должен выглядеть:")
+    await message.answer(text = f"Если это вещь с интернета можешь скинуть {hbold('Cсылку')} на подарок чтобы твой Cанта взял его тебе или посмотрел как подарок должен выглядеть:")
 
 @check_private
 async def get_wish_link(message: Message, bot: Bot, state: FSMContext,*args, **kwargs):
@@ -99,9 +97,9 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext,*args, **k
     await add_user_wish(async_session_maker, message.from_user.id, wish_data)
 
     wish_data = (
-        f"Вот твои данные подарка\r\n\n"
+        f"Я записал данные твоего подарка\r\n\n"
         f"Название: {hbold(title)}\n"
-        f'Описание: {desc if desc else "—"}\n'
+        f'Описание: {desc if desc else "—"}\n\n'
         f'Ссылка: {hlink(title="Подарок",url=link) if link else "—"}\n'
     )
 
@@ -110,9 +108,9 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext,*args, **k
         wishes = await get_user_wishes(async_session_maker, message.from_user.id)
         wishes_text = "Это список того что вы можете подарить своему получателю"
         for index, wish in enumerate(wishes):
-            if wish.is_gift_ready:
+            if wish.is_gift_received:
                 continue
-            
+
             wishes_text += (
                 f"\n{index+1})\tНазвание  : {wish.title}\n"
                 f"{' ' * (4 if index+1 < 10 else 6)}Описание : {wish.description if wish.description else '—'}\n"
@@ -135,7 +133,7 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext,*args, **k
         )
     else:
         await message.answer(
-            text="Все отлично когда будет распределение участников твой подарок будет виден твоему Санте"
+            text="Все отлично когда будет распределение участников твой Лист Желаний будет виден твоему Тайному Санте"
         )
 
     await message.answer(text=wish_data, disable_web_page_preview=True, reply_markup=get_reply_wish_list_markup())
@@ -146,7 +144,7 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext,*args, **k
 @check_private
 async def message_add_wish_handler(message: Message, state: FSMContext,*args, **kwargs):
     await message.answer(
-        text="Начинаем сбор информации о подарке\nЕсли нажал случайно то можешь отменить действие командой /cancel\n\nВведи название подарка который хочешь получить:"
+        text="Начинаем сбор информации о подарке\nЕсли запустил действие случайно то можешь отменить действие командой \n/cancel\n\nВведи название подарка который хочешь получить:"
     )
     await state.set_state(StepsForm.GET_wish_title)
 

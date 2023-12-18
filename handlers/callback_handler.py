@@ -149,6 +149,10 @@ async def delete_wish_callback(
 
     wishes = await get_user_wishes(async_session_maker, call.from_user.id)
     if len(wishes) != 0:
+        await bot.send_message(
+            call.from_user.id, text="Мы оповестим Сант которые еще не подготовили свой подарок, что ты обновил(а) свой Список Желаний"
+        )
+
         wishes_text = "Обновленный список желании\n"
         for index, wish in enumerate(wishes):
             wishes_text += (
@@ -167,11 +171,11 @@ async def delete_wish_callback(
         )
 
         await bot.send_message(
-                event.tg_santa_id,
-                text=wishes_text,
-                parse_mode="html",
-                reply_markup=create_inline_wish_buttons(wishes),
-            )
+            event.tg_santa_id,
+            text=wishes_text,
+            parse_mode="html",
+            reply_markup=create_inline_wish_buttons(wishes),
+        )
 
 
 async def send_receiver_notification_callback(
@@ -180,48 +184,48 @@ async def send_receiver_notification_callback(
     receiver_id = callback_data.id
     chat = callback_data.chat
     giver_id = call.from_user.id
-    print(
-        f"""
-Receiver:{receiver_id},
-Santa: {giver_id},
-Chat:{chat}
-"""
-    )
+
+    await call.message.delete()
+
     wishes = await get_user_wishes(async_session_maker, receiver_id)
     if len(wishes) != 0:
-        await call.message.reply(
+        await call.message.answer(
             text="Выбери подарок который ты уже взял\nЯ лишь уведомлю получателя но не буду говорить какой подарок ты взял для него",
             reply_markup=get_inline_gift_list(chat,wishes),
         )
-        
-        
+        # await call.message.delete()
 
     else:
-        await call.message.reply(text = "У получателя нет списка подарков но я его уведомил что ты взял подарок")
+        await call.message.answer(text = "У получателя нет списка подарков но я его уведомил что ты взял подарок")
         group_chat = await bot.get_chat(chat)
         msg = await bot.send_message(
             chat_id=receiver_id,
-            text = f"Твой Тайный подарок из группы {group_chat.full_name} готов",
-            # reply_markup=
+            text = f"Твой подарок из группы {group_chat.full_name} готов",
         )   
         await bot.pin_chat_message(chat_id= receiver_id,message_id=msg.message_id)
 
+    
     await update_event_receiveer_giver(async_session_maker, receiver_id, giver_id, chat)
 
 async def receiver_gift_ready_callback(call: CallbackQuery, callback_data: GiftReadyInfo, bot: Bot):
     chat = callback_data.chat
     receiver_id = callback_data.receiver
     wish_id = callback_data.id
+    user_id = call.from_user.id
+    
+
+    await call.message.answer(text = "Мы отправили сообщение твоему получателю")
     
     await call.message.delete()
-    
 
     group_chat = await bot.get_chat(chat)
     msg = await bot.send_message(
         chat_id=receiver_id,
-        text = f"Твой Тайный подарок из группы {group_chat.full_name} готов\nПосле того как получишь его можешь нажать на кнопку ниже и тем самым поблагодарить твоего Санту",
-        reply_markup=get_inline_gift_received(wish_id,chat,call.from_user.id)
+        text = f"Твой подарок из группы {group_chat.full_name} готов\nПосле того как получишь его можешь нажать на кнопку ниже и тем самым поблагодарить твоего Санту",
+        reply_markup=get_inline_gift_received(wish_id,chat,user_id)
     )
+
+    
 
     await bot.pin_chat_message(chat_id= receiver_id,message_id=msg.message_id)
 
@@ -230,9 +234,10 @@ async def gift_received_callback(call: CallbackQuery, callback_data: GiftReceive
     # callback_data.chat
     wish_id = callback_data.wish
     await update_user_wish(async_session_maker,call.from_user.id,wish_id)
-    
+
+
+    await bot.answer_callback_query(callback_query_id=call.id, text = "Мы отправили сообщение твоему Санте")
     await call.message.delete()
-    
     await bot.send_message(chat_id=callback_data.santa, text = "Твой подарок был получен\nТеперь ты официально Санта")
 
     

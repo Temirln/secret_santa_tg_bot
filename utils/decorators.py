@@ -8,6 +8,7 @@ def check_private(func):
         await message.reply(text = "Это команда работает только в личном сообщении бота")
     return wrapper
 
+
 def check_private_messages(func):
     async def wrapper(message: Message, *args, **kwargs):
         if message.chat.type == "private":
@@ -16,12 +17,14 @@ def check_private_messages(func):
         # await message.reply(text = "Это команда работает только в личном сообщении бота")
     return wrapper
 
+
 def check_chat(func):
     async def wrapper(message: Message,*args, **kwargs):
         if message.chat.type in ["group",'supergroup']:
             return await func(message,*args, **kwargs)
         await message.reply(text = "Это команда работает только в Группах")
     return wrapper
+
 
 def check_admin(func):
     async def wrapper(message: Message,bot: Bot,*args, **kwargs):
@@ -31,7 +34,7 @@ def check_admin(func):
 
         await message.reply_animation(
             animation="CgACAgIAAxkBAAINeGV94qwIlxu8EY6o-sZz0as3AAGmjgAC_kIAAq7n8Eu1om4yExzheDME",
-            caption="Этой командой могут пользоваться только Администраторы",
+            caption="Эта команда не доступна для тех, кто плохо вел себя в этом году",
         )
     return wrapper
         

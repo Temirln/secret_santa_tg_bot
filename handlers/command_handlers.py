@@ -116,20 +116,20 @@ async def command_notify_receiver(message: Message, bot: Bot,*args, **kwargs):
 async def command_edit_wish_list(message: Message, state: FSMContext,*args, **kwargs):
     wishes = await get_user_wishes(async_session_maker, message.from_user.id)
 
-    wishes_text = "Ваш список желании\n"
+    wishes_text = "Ваш список желаний ⬇️\n"
     if len(wishes) != 0:
         for index, wish in enumerate(wishes):
             wishes_text += (
                 f"\n{index+1}) \tНазвание : {wish.title}\n"
-                f"{' ' * (5 if index+1 < 10 else 6)}\tОписание : {wish.description if wish.description else '—'}\n"
+                f"{' ' * (4 if index+1 < 10 else 6)}\tОписание : {wish.description if wish.description else '—'}\n"
             )
     else:
-        wishes_text += "\nЗдесь пока пусто"
+        wishes_text += "\nЗдесь пока пусто😕"
 
     await message.answer(text = wishes_text, reply_markup=create_inline_wish_buttons(wishes))
 
     await message.answer(
-        text="Выбери Одно Действие", reply_markup=get_reply_wish_list_markup()
+        text="Ты можешь дополнить или убрать желание из списка", reply_markup=get_reply_wish_list_markup()
     )
 
 async def command_help_handler(message: Message):
@@ -239,9 +239,9 @@ async def command_activate_game(message: Message, bot: Bot,*args, **kwargs):
         )
         wishes = await get_user_wishes(async_session_maker, receiver.tg_user_id)
         if len(wishes) != 0:
-            wishes_text = "Это список того что вы можете подарить своему получателю"
+            wishes_text = "Это список того что вы можете подарить своему получателю\n"
             for index, wish in enumerate(wishes):
-                if wish.is_gift_ready:
+                if wish.is_gift_received:
                     continue
 
                 wishes_text += f"""
