@@ -39,7 +39,9 @@ from handlers.message_handler import (
     get_wish_title,
     message_add_wish_handler,
     message_delete_wish_handler,
-    # echo_handler
+    # echo_handler,
+    get_price_chat,
+    get_description_chat,
 )
 from middlewares.bot_middlewares import CheckAdminMiddleware
 from utils.callback_data import (
@@ -123,6 +125,9 @@ async def main() -> None:
         get_wish_short_description, StepsForm.GET_wish_short_description
     )
     dp.message.register(get_wish_link, StepsForm.GET_wish_link)
+
+    dp.message.register(get_price_chat, StepsForm.GET_chat_gift_price)
+    dp.message.register(get_description_chat, StepsForm.GET_additional_description_chat)
 
     # Callbacks
     dp.callback_query.register(participate_callback, F.data == "participate")

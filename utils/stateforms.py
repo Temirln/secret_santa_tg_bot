@@ -9,3 +9,6 @@ class StepsForm(StatesGroup):
     FINISH_wish = State()
 
     WISH_list_updated = State()
+
+    GET_chat_gift_price = State()
+    GET_additional_description_chat = State()

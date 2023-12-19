@@ -32,7 +32,7 @@ from keyboards.reply_k import get_reply_wish_list_markup
 from utils.decorators import check_admin, check_chat, check_private
 from utils.features import get_all_members
 from utils.shuffle_user import arrange_secret_santa
-
+from utils.stateforms import StepsForm
 
 async def command_start_handler(message: Message) -> None:
     if message.chat.type == "supergroup":
@@ -237,7 +237,7 @@ async def command_all_mention_handler(message: Message, *args, **kwargs):
     )
 
 
-@check_private
+# @check_private/
 async def command_cancel_event(message: Message, state: FSMContext, *args, **kwargs):
     await state.clear()
     await message.reply(
@@ -247,9 +247,9 @@ async def command_cancel_event(message: Message, state: FSMContext, *args, **kwa
 
 @check_chat
 @check_admin
-async def command_activate_game(message: Message, bot: Bot, *args, **kwargs):
+async def command_activate_game(message: Message, bot: Bot, state: FSMContext, *args, **kwargs):
     event = await get_chat_event(async_session_maker, message.chat.id)
-    chat_id = message.chat.id
+    # chat_id = message.chat.id
     if event:
         await message.reply(
             text="Участники уже распределены\nЕсли хотите заново начать игру завершите предыдущую командой \n/restart_secret_santa"
@@ -257,63 +257,22 @@ async def command_activate_game(message: Message, bot: Bot, *args, **kwargs):
         return
 
     users = await get_chat_participants(async_session_maker, message.chat.id)
-
-    usernames = [
-        (await bot.get_chat_member(message.chat.id, participant.tg_user_id)).user
-        for participant in users
-    ]
-    usernames_text = "\n".join(
-        [
-            f"{hbold(participant.first_name)}{' - @' + participant.username if participant.username else '' }"
-            for participant in usernames
-        ]
-    )
     if len(users) < 3:
         await message.answer(
             text="Слишком мало участников для игры, должно быть хотя бы 3 участника"
         )
         return
+    
+    await message.answer(
+        text="""
+Необходимо указать бюджет, сколько максимально должен стоить подарок?
 
-    await message.reply_animation(
-        animation="CgACAgIAAxkBAAMuZYEeFYJputUAAVSbkP30lPZANsAhAAJuKQAChzHQS600eUKFozYHMwQ",
-        caption=f"Начинаем распределение участников\n\n{usernames_text}\n\nВсем в личные сообщения были высланы имена и аккаунты ваших Получателей\n\nВеселой всем игры",
-    )
+Например: 5 000₸, 10 000₸ или $10  
 
-    shuffle_users = arrange_secret_santa(users)
-
-    for giver, receiver in shuffle_users.items():
-        tg_user = (await bot.get_chat_member(chat_id, receiver.tg_user_id)).user
-
-        await bot.send_message(
-            giver.tg_user_id,
-            text=f"Привет Санта\nТвоим получателем будет \n\n<span class='tg-spoiler'>{hbold(tg_user.first_name)} {'@'+tg_user.username if tg_user.username else ''}</span>",
-            parse_mode="html",
-        )
-        wishes = await get_user_wishes(async_session_maker, receiver.tg_user_id)
-        if len(wishes) != 0:
-            wishes_text = "Это список того что вы можете подарить своему получателю\n"
-            for index, wish in enumerate(wishes):
-                if wish.is_gift_received:
-                    continue
-
-                wishes_text += f"""
-{index+1})\tНазвание: {wish.title}
-\t\t\t\t\tОписание: {wish.description}
+(Если нажали случайно можете остановить командой /cancel)
 """
-            await bot.send_message(
-                giver.tg_user_id,
-                text=wishes_text,
-                reply_markup=create_inline_wish_buttons(wishes),
-            )
-        else:
-            # user = await bot.get_chat_member(message.chat.id,receiver.telegram_id)
-            await bot.send_message(
-                receiver.tg_user_id,
-                text=f"Ты не предоставил(а) список подарков который хотел(а) бы получить\nТвоему Тайному Санте будет труднее выбрать тебе подарок \nМожешь исправить это командой /update_wish_list",
-            )
-        await arrange_all_giver_receiver(
-            async_session_maker,
-            giver.tg_user_id,
-            receiver.tg_user_id,
-            message.chat.id,
-        )
+    )
+    await state.set_state(StepsForm.GET_chat_gift_price)
+
+    
+    
