@@ -186,6 +186,16 @@ async def command_rules_handler(message: Message):
 @check_admin
 async def command_participate_handler(message: Message, bot: Bot, *args, **kwargs):
 
+    group_chat = await get_group_chat(async_session_maker, message.chat.id)
+
+    if not group_chat:
+        await add_group_chat(
+            async_session_maker,
+            message.chat.title,
+            message.chat.id,
+            message.chat.type,
+        )
+
     if await get_chat_event(async_session_maker, message.chat.id):
         await message.answer(
             text="Участники уже распределены\n Если хотите добавить новых участников перезапустите игру через команду \n/restart_secret_santa"
