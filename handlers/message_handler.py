@@ -7,7 +7,7 @@ import re
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from aiogram.utils.markdown import hbold, hcode, hlink,hitalic
+from aiogram.utils.markdown import hbold, hcode, hlink, hitalic
 
 from db.crud.event import get_receiver_event, arrange_all_giver_receiver
 from db.crud.wishlist import add_user_wish, get_user_wishes
@@ -20,11 +20,11 @@ from keyboards.reply_k import (
 )
 from utils.decorators import check_private
 from utils.stateforms import StepsForm
-from utils.shuffle_user import arrange_secret_santa 
+from utils.shuffle_user import arrange_secret_santa
 
 
 async def echo_handler(message: Message, bot: Bot) -> None:
-    print("GIF:",message.animation)
+    print("GIF:", message.animation)
     print("GROUP:", message.chat.type)
     print("GROUP_ID:", message.chat.id)
 
@@ -86,7 +86,7 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext, *args, **
 
     wish_data = (
         f"Я записал данные твоего подарка\r\n\n"
-        f"Название: {hbold(title)}\n"
+        f"Название: {title}\n"
         f'Описание: {desc if desc else "—"}\n\n'
         f'Ссылка: {hlink(title="Подарок",url=link) if link else "—"}\n'
     )
@@ -100,8 +100,8 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext, *args, **
                 continue
 
             wishes_text += (
-                f"\n{index+1})\tНазвание  : {wish.title}\n"
-                f"{' ' * (4 if index+1 < 10 else 6)}Описание : {wish.description if wish.description else '—'}\n"
+                f"\n{index+1})\t{hbold('Название')} : {wish.title}\n"
+                f"{' ' * (4 if index+1 < 10 else 6)}{hbold('Описание')} : {wish.description if wish.description else '—'}\n"
             )
         for e in event:
             if e.is_gift_ready:
@@ -157,8 +157,9 @@ async def message_delete_wish_handler(message: Message, *args, **kwargs):
 
 async def get_price_chat(message: Message, bot: Bot, state: FSMContext):
 
-    await state.update_data(price = message.text)
-    await message.answer(text = """
+    await state.update_data(price=message.text)
+    await message.answer(
+        text="""
 Напишите правило: день, место или каким образом будет передаваться подарки. Можете тут же добавить дополнительную информацию. Что можно, а что нельзя дарить. И прочие детали игры.
 
 (Если нажали случайно можете остановить командой /cancel)
@@ -177,7 +178,6 @@ async def get_description_chat(message: Message, bot: Bot, state: FSMContext):
 
     await state.clear()
 
-
     chat_id = message.chat.id
     users = await get_chat_participants(async_session_maker, message.chat.id)
 
@@ -191,7 +191,6 @@ async def get_description_chat(message: Message, bot: Bot, state: FSMContext):
             for participant in usernames
         ]
     )
-    
 
     await message.reply_animation(
         animation="CgACAgIAAxkBAAMuZYEeFYJputUAAVSbkP30lPZANsAhAAJuKQAChzHQS600eUKFozYHMwQ",
@@ -215,26 +214,26 @@ async def get_description_chat(message: Message, bot: Bot, state: FSMContext):
             parse_mode="html",
         )
 
-        await bot.pin_chat_message(chat_id = giver.tg_user_id, message_id=msg.message_id)
+        await bot.pin_chat_message(chat_id=giver.tg_user_id, message_id=msg.message_id)
 
         wishes = await get_user_wishes(async_session_maker, receiver.tg_user_id)
-        
+
         if len(wishes) != 0:
             wishes_text = f"Это список того что вы можете подарить <a href='tg://user?id={tg_user.id}'>{tg_user.first_name}</a>\n"
             index = 1
             for wish in wishes:
                 if wish.is_gift_received:
                     continue
-                
+
                 wishes_text += f"""
-{index})\tНазвание: {wish.title}
-\t\t\t\t\tОписание: {wish.description}
+{index})\t{hbold('Название')}: {wish.title}
+\t\t\t\t\t{hbold('Описание')}: {wish.description}
 """
                 index += 1
             if index == 1:
                 await bot.send_message(
                     receiver.tg_user_id,
-                    text=f"Добавь новые желания в свой список\nВсе старые ты уже получил"
+                    text=f"Добавь новые желания в свой список\nВсе старые ты уже получил",
                 )
             else:
                 await bot.send_message(

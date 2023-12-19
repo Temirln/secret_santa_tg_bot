@@ -158,8 +158,8 @@ async def delete_wish_callback(
         wishes_text = "Обновленный список желании\n"
         for index, wish in enumerate(wishes):
             wishes_text += (
-                f"\n{index+1})\tНазвание : {wish.title}\n"
-                f"{' ' * (4 if index+1 < 10 else 6)} Описание : {wish.description if wish.description else '—'}\n"
+                f"\n{index+1})\t{hbold('Название')} : {wish.title}\n"
+                f"{' ' * (4 if index+1 < 10 else 6)} {hbold('Описание')} : {wish.description if wish.description else '—'}\n"
             )
     else:
         wishes_text = "Получатель очистил свой список желании"

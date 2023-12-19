@@ -34,6 +34,7 @@ from utils.features import get_all_members
 from utils.shuffle_user import arrange_secret_santa
 from utils.stateforms import StepsForm
 
+
 async def command_start_handler(message: Message) -> None:
     if message.chat.type == "supergroup":
         group_chat = await get_group_chat(async_session_maker, message.chat.id)
@@ -247,7 +248,9 @@ async def command_cancel_event(message: Message, state: FSMContext, *args, **kwa
 
 @check_chat
 @check_admin
-async def command_activate_game(message: Message, bot: Bot, state: FSMContext, *args, **kwargs):
+async def command_activate_game(
+    message: Message, bot: Bot, state: FSMContext, *args, **kwargs
+):
     event = await get_chat_event(async_session_maker, message.chat.id)
     # chat_id = message.chat.id
     if event:
@@ -262,7 +265,7 @@ async def command_activate_game(message: Message, bot: Bot, state: FSMContext, *
             text="Слишком мало участников для игры, должно быть хотя бы 3 участника"
         )
         return
-    
+
     await message.answer(
         text="""
 Необходимо указать бюджет, сколько максимально должен стоить подарок?
@@ -273,6 +276,3 @@ async def command_activate_game(message: Message, bot: Bot, state: FSMContext, *
 """
     )
     await state.set_state(StepsForm.GET_chat_gift_price)
-
-    
-    
