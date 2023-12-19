@@ -76,7 +76,12 @@ async def chat_member_update_handler(update: ChatMemberUpdated, bot: Bot):
                     update.chat.type,
                 )
 
-            await update.answer("Бот Тайна Санта готов к работе")
+            members = await get_all_members(update.chat.id, emojis)
+
+            await update.answer(
+                text=START_TEXT_GROUP.format(group_name=hbold(update.chat.title))
+                + members
+            )
         elif update.new_chat_member.status == "member" and update.chat.type == "group":
             await update.answer(
                 f"<a href='tg://user?id={update.from_user.id}'>{update.from_user.full_name}</a>, Привет! Я помогу вам в игре Тайный Санта. Для продолжения выдайте мне права и разрешение читать и отправлять сообщения в настройках группы"
