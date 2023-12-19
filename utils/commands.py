@@ -17,7 +17,7 @@ async def set_commands(bot: Bot):
     ]
 
     group_commands = [
-        BotCommand(command="all", description="Упоминуть всех"),
+        BotCommand(command="all", description="Упомянуть Всех "),
         BotCommand(
             command="show_participants", description="Показать Список всех Участников"
         ),
