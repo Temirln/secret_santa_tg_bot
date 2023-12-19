@@ -1,8 +1,15 @@
 # from aiogram import Bot
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from utils.callback_data import GroupInfo, WishInfo, ReceiverInfo,GiftReadyInfo,GiftReceivedInfo
+
 from db.crud.participants import get_participant
 from db.db import async_session_maker
+from utils.callback_data import (
+    GiftReadyInfo,
+    GiftReceivedInfo,
+    GroupInfo,
+    ReceiverInfo,
+    WishInfo,
+)
 
 
 def create_inline_wish_buttons(wishes):
@@ -14,17 +21,15 @@ def create_inline_wish_buttons(wishes):
     return keyboard_builder.as_markup()
 
 
-
-from  aiogram.types.switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 def get_inline_button():
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
-        text="⛄️Участвовать☃️", 
+        text="⛄️Участвовать☃️",
         callback_data="participate",
     )
     keyboard_builder.button(
-        text="Перейти в Бота 🤖", 
-        url = "t.me/picturebook_bot",
+        text="Перейти в Бота 🤖",
+        url="t.me/picturebook_bot",
     )
 
     keyboard_builder.adjust(1)
@@ -32,12 +37,9 @@ def get_inline_button():
     return keyboard_builder.as_markup()
 
 
-def get_inline_button_not_participate(groups: list[(int,str)]):
-
+def get_inline_button_not_participate(groups: list[(int, str)]):
     keyboard_builder = InlineKeyboardBuilder()
     for id, title in groups:
-        # group = await bot.get_chat(g)
-        # print(group)
         keyboard_builder.button(
             text=f"Отказаться {title}", callback_data=GroupInfo(id=id)
         )
@@ -51,19 +53,23 @@ def get_inline_wishes_list(wishes):
         keyboard_builder.button(
             text=f"{wish.title}", callback_data=WishInfo(id=wish.id, title=wish.title)
         )
-    
+
     keyboard_builder.adjust(1)
 
     return keyboard_builder.as_markup()
 
-def get_inline_gift_list(chat_id,wishes):
+
+def get_inline_gift_list(chat_id, wishes):
     keyboard_builder = InlineKeyboardBuilder()
     for wish in wishes:
         if wish.is_gift_received:
-            continue 
+            continue
 
         keyboard_builder.button(
-            text=f"{wish.title}", callback_data=GiftReadyInfo(id=wish.id, title=wish.title,chat = chat_id, receiver = wish.tg_user_id)
+            text=f"{wish.title}",
+            callback_data=GiftReadyInfo(
+                id=wish.id, title=wish.title, chat=chat_id, receiver=wish.tg_user_id
+            ),
         )
 
     keyboard_builder.adjust(1)
@@ -82,17 +88,15 @@ async def get_inline_receivers(receivers):
             text=f"{receiver.tg_user_firstname}",
             callback_data=ReceiverInfo(id=receiver.tg_user_id, chat=receiver_chat),
         )
-    
-
 
     return keyboard_builder.as_markup()
 
 
-def get_inline_gift_received(wish_id,chat_id,santa_id):
+def get_inline_gift_received(wish_id, chat_id, santa_id):
     keyboard_builder = InlineKeyboardBuilder()
 
     keyboard_builder.button(
-        text=f"Подарок получен🥰",
-        callback_data=GiftReceivedInfo(wish = wish_id,chat=chat_id, santa= santa_id),
+        text="Подарок получен🥰",
+        callback_data=GiftReceivedInfo(wish=wish_id, chat=chat_id, santa=santa_id),
     )
     return keyboard_builder.as_markup()

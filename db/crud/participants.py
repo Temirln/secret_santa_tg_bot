@@ -1,33 +1,28 @@
-from ..models import Participants
+from sqlalchemy import delete, select, update
 
 # from .db import session,get_async_session
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import select, delete, update
 
+from ..models import Participants
 
 
 async def delete_chat_participants(session, chat_id):
     async with session() as session:
         async with session.begin():
-            stmt = delete(Participants).where(
-                Participants.tg_chat_id == chat_id
-            )
+            stmt = delete(Participants).where(Participants.tg_chat_id == chat_id)
             await session.execute(stmt)
+
 
 async def get_chat_participants(session, group_chat_id):
     async with session() as session:
         async with session.begin():
-            stmt = select(Participants).where(
-                Participants.tg_chat_id == group_chat_id
-            )
+            stmt = select(Participants).where(Participants.tg_chat_id == group_chat_id)
 
             result = await session.execute(stmt)
             return result.scalars().fetchall()
-        
 
-async def add_participant(
-    session, telegram_firstname, telegram_id, group_chat_id
-):
+
+async def add_participant(session, telegram_firstname, telegram_id, group_chat_id):
     async with session() as session:
         async with session.begin():
             new_participant = insert(Participants).values(
@@ -69,4 +64,3 @@ async def delete_participant(session, telegram_id, group_chat_id):
             )
 
             await session.execute(stmt)
-

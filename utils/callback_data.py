@@ -9,11 +9,13 @@ class WishInfo(CallbackData, prefix="wish_id"):
     id: int
     title: str
 
+
 class GiftReadyInfo(CallbackData, prefix="wish_id"):
     id: int
     title: str
     chat: int
     receiver: int
+
 
 class GiftReceivedInfo(CallbackData, prefix="gift_id"):
     # id: int
@@ -25,6 +27,7 @@ class GiftReceivedInfo(CallbackData, prefix="gift_id"):
 class ReceiverInfo(CallbackData, prefix="receiver_id"):
     id: int
     chat: int
+
 
 class ReceiverInfo(CallbackData, prefix="receiver_id"):
     id: int

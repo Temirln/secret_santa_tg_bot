@@ -1,10 +1,10 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
+
 
 def get_reply_wish_next_step_markup():
     reply_builder = ReplyKeyboardBuilder()
 
-    reply_builder.button(text="Пропустить Действие")
+    reply_builder.button(text="Пропустить Действие ⏭")
     reply_builder.adjust(1)
 
     return reply_builder.as_markup(
@@ -13,11 +13,14 @@ def get_reply_wish_next_step_markup():
         input_field_placeholder="Можешь пропустить этот шаг",
     )
 
+
 def get_reply_wish_list_markup():
     reply_builder = ReplyKeyboardBuilder()
 
-    reply_builder.button(text="Добавить Подарок")
-    reply_builder.button(text="Удалить Подарок")
+    reply_builder.button(text="Добавить Подарок 🎁")
+    reply_builder.button(
+        text="Удалить Подарок ❌",
+    )
     reply_builder.adjust(1)
 
     return reply_builder.as_markup(

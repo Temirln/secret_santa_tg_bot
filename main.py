@@ -1,62 +1,55 @@
 import asyncio
 import logging
 import sys
-from os import getenv
 
-from aiogram import Bot, Dispatcher, Router, F
+from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
-from utils.stateforms import StepsForm
+from aiogram.filters import IS_NOT_MEMBER, MEMBER, Command
+from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter
+from aiogram.utils.chat_action import ChatActionMiddleware
 
-from handlers.command_handlers import (
-    
+from config import ADMIN_ID, BOT_TOKEN
+from db.db import setup_db
+from handlers.callback_handler import (
+    delete_wish_callback,
+    gift_received_callback,
+    not_participate_callback,
+    participate_callback,
+    receiver_gift_ready_callback,
+    send_receiver_notification_callback,
+)
+from handlers.command_handlers import (  # Standart; # Group; # Private
     chat_member_update_handler,
-    
-    # Standart
-    command_start_handler,
-    command_help_handler,
-    command_faq_handler,
-    command_rules_handler,
-
-    # # Group
-    command_show_participants,
-    command_participate_handler,
-    command_all_mention_handler,
     command_activate_game,
-    command_quit_game,
-    # # Private
+    command_all_mention_handler,
     command_cancel_event,
     command_edit_wish_list,
+    command_faq_handler,
+    command_help_handler,
     command_notify_receiver,
+    command_participate_handler,
+    command_quit_game,
+    command_rules_handler,
+    command_show_participants,
+    command_start_handler,
 )
-
 from handlers.message_handler import (
-    echo_handler,
-    get_wish_title,
-    get_wish_short_description,
     get_wish_link,
-
+    get_wish_short_description,
+    get_wish_title,
     message_add_wish_handler,
     message_delete_wish_handler,
 )
-from handlers.callback_handler import (
-    participate_callback,
-    not_participate_callback,
-    delete_wish_callback,
-    send_receiver_notification_callback,
-    receiver_gift_ready_callback,
-    gift_received_callback,
-)
-
-from aiogram.utils.chat_action import ChatActionMiddleware
-from utils.callback_data import GroupInfo, WishInfo, ReceiverInfo,GiftReadyInfo,GiftReceivedInfo
-from utils.commands import set_commands
 from middlewares.bot_middlewares import CheckAdminMiddleware
-
-from config import BOT_TOKEN, ADMIN_ID
-from aiogram.filters.chat_member_updated import ChatMemberUpdatedFilter
-from aiogram.filters import IS_NOT_MEMBER, MEMBER
-from db.db import setup_db
+from utils.callback_data import (
+    GiftReadyInfo,
+    GiftReceivedInfo,
+    GroupInfo,
+    ReceiverInfo,
+    WishInfo,
+)
+from utils.commands import set_commands
+from utils.stateforms import StepsForm
 
 
 async def start_bot(bot: Bot):
@@ -66,7 +59,6 @@ async def start_bot(bot: Bot):
 
 
 async def shutdown_bot(bot: Bot):
-    # pass
     await bot.send_message(ADMIN_ID, text="Бот Остановлен")
 
 
@@ -82,7 +74,9 @@ async def main() -> None:
     dp.message.middleware.register(ChatActionMiddleware())
     dp.message.middleware.register(CheckAdminMiddleware())
 
-    dp.my_chat_member.register(chat_member_update_handler,ChatMemberUpdatedFilter(IS_NOT_MEMBER >> MEMBER))
+    dp.my_chat_member.register(
+        chat_member_update_handler, ChatMemberUpdatedFilter(IS_NOT_MEMBER >> MEMBER)
+    )
     dp.my_chat_member.register(chat_member_update_handler)
 
     # Commands
@@ -110,8 +104,16 @@ async def main() -> None:
     dp.message.register(command_cancel_event, Command(commands=["cancel"]))
 
     # Messages
-    dp.message.register(message_add_wish_handler, F.text == "Добавить Подарок", F.chat.type == "private")
-    dp.message.register(message_delete_wish_handler, F.text == "Удалить Подарок", F.chat.type == "private")
+    dp.message.register(
+        message_add_wish_handler,
+        F.text == "Добавить Подарок 🎁",
+        F.chat.type == "private",
+    )
+    dp.message.register(
+        message_delete_wish_handler,
+        F.text == "Удалить Подарок ❌",
+        F.chat.type == "private",
+    )
     # dp.message.register(echo_handler)
 
     # FSM
@@ -121,7 +123,6 @@ async def main() -> None:
     )
     dp.message.register(get_wish_link, StepsForm.GET_wish_link)
 
-
     # Callbacks
     dp.callback_query.register(participate_callback, F.data == "participate")
     dp.callback_query.register(not_participate_callback, GroupInfo.filter())
@@ -129,8 +130,8 @@ async def main() -> None:
     dp.callback_query.register(
         send_receiver_notification_callback, ReceiverInfo.filter()
     )
-    dp.callback_query.register(receiver_gift_ready_callback,GiftReadyInfo.filter())
-    dp.callback_query.register(gift_received_callback,GiftReceivedInfo.filter())
+    dp.callback_query.register(receiver_gift_ready_callback, GiftReadyInfo.filter())
+    dp.callback_query.register(gift_received_callback, GiftReceivedInfo.filter())
 
     # Bot Starts
     try:

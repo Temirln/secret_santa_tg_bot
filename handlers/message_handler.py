@@ -6,44 +6,24 @@ import re
 
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, ReplyKeyboardRemove
-from aiogram.utils.markdown import hbold, hlink,hcode
-from db.crud.event import (
-    get_santa_event,
-    get_chat_event,
-    
-    arrange_all_giver_receiver,
-     
-    get_receiver_event,
-    
-)
-from db.crud.wishlist import (
-    add_user_wish,
-    get_user_wishes,
-)
-from db.crud.participants import (
-    get_chat_participants,
-)
+from aiogram.types import Message
+from aiogram.utils.markdown import hbold, hcode, hlink
 
+from db.crud.event import get_receiver_event
+from db.crud.wishlist import add_user_wish, get_user_wishes
 from db.db import async_session_maker
-from keyboards.inline_k import (
-    create_inline_wish_buttons,
-    get_inline_wishes_list,
-    get_inline_receivers,
+from keyboards.inline_k import create_inline_wish_buttons, get_inline_wishes_list
+from keyboards.reply_k import (
+    get_reply_wish_list_markup,
+    get_reply_wish_next_step_markup,
 )
-from keyboards.reply_k import get_reply_wish_next_step_markup, get_reply_wish_list_markup
-from utils.shuffle_user import arrange_secret_santa
+from utils.decorators import check_private
 from utils.stateforms import StepsForm
 
-from aiogram.types.chat_permissions import ChatPermissions
 
-from utils.decorators import check_private
-
-async def echo_handler(message: Message,bot :Bot) -> None:
-    # await message.answer(text = "From:"+str(message.migrate_from_chat_id))
-    # await message.answer(text = "To:"+str(message.chat.id))
-    print("GROUP:",message.chat.type)
-    print("GROUP_ID:",message.chat.id)
+async def echo_handler(message: Message, bot: Bot) -> None:
+    print("GROUP:", message.chat.type)
+    print("GROUP_ID:", message.chat.id)
 
     try:
         await message.send_copy(chat_id=message.chat.id)
@@ -51,35 +31,40 @@ async def echo_handler(message: Message,bot :Bot) -> None:
         await message.answer("Nice try!")
 
 
-
-
-
-
 @check_private
-async def get_wish_title(message: Message, state: FSMContext,*args, **kwargs):
-    if message.text.title().strip() == "Пропустить Действие":
+async def get_wish_title(message: Message, state: FSMContext, *args, **kwargs):
+    if message.text.title().strip() == "Пропустить Действие ⏭":
         await message.answer(text="Название подарка обязательна")
         return
+
     await state.update_data(title=message.text)
     await state.set_state(StepsForm.GET_wish_short_description)
     await message.answer(
-        text=f"Теперь можешь ввести короткое описание для твоего подарка\n\nГде его можно найти или как он должен выглядеть, к примеру \n\n{hcode('Я хочу получить от Тайного Санты стеклянный снежный шар с елкой внутри и ...')}",
-        reply_markup=get_reply_wish_next_step_markup()
+        text=f"Теперь можешь ввести короткое описание для твоего подарка\n\nГде его можно найти или как он должен выглядеть.\nК примеру: \n\n{hcode('Я хочу получить от Тайного Санты стеклянный снежный шар с елкой внутри и ...')}",
+        reply_markup=get_reply_wish_next_step_markup(),
     )
 
+
 @check_private
-async def get_wish_short_description(message: Message, state: FSMContext,*args, **kwargs):
-    if message.text.strip().title() != "Пропустить Действие":
+async def get_wish_short_description(
+    message: Message, state: FSMContext, *args, **kwargs
+):
+    if message.text.strip().title() != "Пропустить Действие ⏭":
         await state.update_data(desc=message.text)
 
     await state.set_state(StepsForm.GET_wish_link)
-    await message.answer(text = f"Если это вещь с интернета можешь скинуть {hbold('Cсылку')} на подарок чтобы твой Cанта взял его тебе или посмотрел как подарок должен выглядеть:")
+    await message.answer(
+        text=f"Если это вещь с интернета можешь скинуть {hbold('Cсылку')} на подарок чтобы твой Cанта взял его тебе или посмотрел как подарок должен выглядеть:"
+    )
+
 
 @check_private
-async def get_wish_link(message: Message, bot: Bot, state: FSMContext,*args, **kwargs):
-    if message.text.strip().title() != "Пропустить Действие":
+async def get_wish_link(message: Message, bot: Bot, state: FSMContext, *args, **kwargs):
+    if message.text.strip().title() != "Пропустить Действие ⏭":
         # state.set_state(StepsForm.FINISH_wish)
-        url_pattern = re.compile(r"(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})")
+        url_pattern = re.compile(
+            r"(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})"
+        )
         wish_link = message.text
         print(url_pattern.search(wish_link))
         if not url_pattern.search(wish_link):
@@ -136,27 +121,32 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext,*args, **k
             text="Все отлично когда будет распределение участников твой Лист Желаний будет виден твоему Тайному Санте"
         )
 
-    await message.answer(text=wish_data, disable_web_page_preview=True, reply_markup=get_reply_wish_list_markup())
+    await message.answer(
+        text=wish_data,
+        disable_web_page_preview=True,
+        reply_markup=get_reply_wish_list_markup(),
+    )
     await state.clear()
 
 
-
 @check_private
-async def message_add_wish_handler(message: Message, state: FSMContext,*args, **kwargs):
+async def message_add_wish_handler(
+    message: Message, state: FSMContext, *args, **kwargs
+):
     await message.answer(
-        text="Начинаем сбор информации о подарке\nЕсли запустил действие случайно то можешь отменить действие командой \n/cancel\n\nВведи название подарка который хочешь получить:"
+        text="🎁Начинаем сбор информации о подарке🎁\n\nЕсли запустил действие случайно то можешь отменить действие командой \n/cancel\n\n\nВведи название подарка который хочешь получить:"
     )
     await state.set_state(StepsForm.GET_wish_title)
 
+
 # @check_private
-async def message_delete_wish_handler(message: Message,*args, **kwargs):
+async def message_delete_wish_handler(message: Message, *args, **kwargs):
     gifts = await get_user_wishes(async_session_maker, message.from_user.id)
     if len(gifts) == 0:
         await message.answer("Твой Список Желаний Пуст")
         return
-    
+
     await message.answer(
         text="Выбери какой подарок из списка который хочешь удалить",
         reply_markup=get_inline_wishes_list(gifts),
     )
-
