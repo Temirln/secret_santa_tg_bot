@@ -29,7 +29,7 @@ def get_inline_button():
     )
     keyboard_builder.button(
         text="Перейти в Бота 🤖",
-        url="t.me/picturebook_bot",
+        url="t.me/secret_santa_barbara_bot",
     )
 
     keyboard_builder.adjust(1)

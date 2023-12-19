@@ -47,7 +47,7 @@ async def participate_callback(call: CallbackQuery, bot: Bot):
     if not await get_tg_user(async_session_maker, user_tg_id):
         await bot.answer_callback_query(
             callback_query_id=call.id,
-            text="Перед тем как нажать эту кнопку ты должен запустить бота по ссылке ниже или ввести в поиске \n@picturebook_bot",
+            text="Перед тем как нажать эту кнопку ты должен запустить бота по ссылке ниже или ввести в поиске \n@secret_santa_barbara_bot",
             show_alert=True,
         )
         return
