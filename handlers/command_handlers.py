@@ -249,7 +249,7 @@ async def command_activate_game(message: Message, bot: Bot, *args, **kwargs):
             for participant in usernames
         ]
     )
-    if len(users) < 1:
+    if len(users) < 3:
         await message.answer(
             text="Слишком мало участников для игры, должно быть хотя бы 3 участника"
         )
