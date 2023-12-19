@@ -36,6 +36,15 @@ from utils.shuffle_user import arrange_secret_santa
 
 async def command_start_handler(message: Message) -> None:
     if message.chat.type == "supergroup":
+        group_chat = await get_group_chat(async_session_maker, message.chat.id)
+
+        if not group_chat:
+            await add_group_chat(
+                async_session_maker,
+                message.chat.title,
+                message.chat.id,
+                message.chat.type,
+            )
 
         members = await get_all_members(message.chat.id, emojis)
 
