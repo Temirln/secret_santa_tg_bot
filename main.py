@@ -39,6 +39,7 @@ from handlers.message_handler import (
     get_wish_title,
     message_add_wish_handler,
     message_delete_wish_handler,
+    echo_handler
 )
 from middlewares.bot_middlewares import CheckAdminMiddleware
 from utils.callback_data import (

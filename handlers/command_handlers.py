@@ -84,7 +84,7 @@ async def chat_member_update_handler(update: ChatMemberUpdated, bot: Bot):
             )
         elif update.new_chat_member.status == "member" and update.chat.type == "group":
             await update.answer(
-                f"<a href='tg://user?id={update.from_user.id}'>{update.from_user.full_name}</a>, Привет! Я помогу вам в игре Тайный Санта. Для продолжения выдайте мне права и разрешение читать и отправлять сообщения в настройках группы"
+                f"<a href='tg://user?id={update.from_user.id}'>{update.from_user.full_name}</a>, Привет! Я помогу вам в игре Тайный Санта. Для продолжения выдайте мне права админа и разрешение читать и отправлять сообщения в настройках группы"
             )
 
         elif update.new_chat_member.status == "left":
@@ -256,7 +256,7 @@ async def command_activate_game(message: Message, bot: Bot, *args, **kwargs):
         return
 
     await message.reply_animation(
-        animation="CgACAgIAAx0CejIa0QADnWV95EmYSBdb_qBdc4D9z-KKw5x6AAJuKQAChzHQS9nN24bhArx5MwQ",
+        animation="CgACAgIAAxkBAAMuZYEeFYJputUAAVSbkP30lPZANsAhAAJuKQAChzHQS600eUKFozYHMwQ",
         caption=f"Начинаем распределение участников\n\n{usernames_text}\n\nВсем в личные сообщения были высланы имена и аккаунты ваших Получателей\n\nВеселой всем игры",
     )
 

@@ -37,7 +37,8 @@ def check_admin(func):
             return await func(message, bot, *args, **kwargs)
 
         await message.reply_animation(
-            animation="CgACAgIAAxkBAAINeGV94qwIlxu8EY6o-sZz0as3AAGmjgAC_kIAAq7n8Eu1om4yExzheDME",
+            # animation="CgACAgIAAxkBAAINeGV94qwIlxu8EY6o-sZz0as3AAGmjgAC_kIAAq7n8Eu1om4yExzheDME",
+            animation="CgACAgIAAxkBAAMpZYEcq_9hS90vJn_DZ8aBx95A-6sAAv5CAAKu5_BLZ3yxbbi6QXozBA",
             caption="Эта команда не доступна для тех, кто плохо вел себя в этом году",
         )
 

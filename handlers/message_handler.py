@@ -22,6 +22,7 @@ from utils.stateforms import StepsForm
 
 
 async def echo_handler(message: Message, bot: Bot) -> None:
+    print("GIF:",message.animation)
     print("GROUP:", message.chat.type)
     print("GROUP_ID:", message.chat.id)
 
