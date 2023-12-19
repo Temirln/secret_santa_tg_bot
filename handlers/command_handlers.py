@@ -155,8 +155,8 @@ async def command_edit_wish_list(message: Message, state: FSMContext, *args, **k
     if len(wishes) != 0:
         for index, wish in enumerate(wishes):
             wishes_text += (
-                f"\n{index+1}) \tНазвание : {wish.title}\n"
-                f"{' ' * (4 if index+1 < 10 else 6)}\tОписание : {wish.description if wish.description else '—'}\n"
+                f"\n{index+1}) \t{hbold('Название')} : {wish.title}\n"
+                f"{' ' * (4 if index+1 < 10 else 6)}\t{hbold('Описание')} : {wish.description if wish.description else '—'}\n"
             )
     else:
         wishes_text += "\nЗдесь пока пусто😕"

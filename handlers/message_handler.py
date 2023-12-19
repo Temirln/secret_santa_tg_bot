@@ -86,8 +86,8 @@ async def get_wish_link(message: Message, bot: Bot, state: FSMContext, *args, **
 
     wish_data = (
         f"Я записал данные твоего подарка\r\n\n"
-        f"Название: {title}\n"
-        f'Описание: {desc if desc else "—"}\n\n'
+        f"{hbold('Название')}: {title}\n"
+        f'{hbold("Описание")}: {desc if desc else "—"}\n\n'
         f'Ссылка: {hlink(title="Подарок",url=link) if link else "—"}\n'
     )
 
