@@ -43,7 +43,7 @@ async def get_wish_title(message: Message, state: FSMContext, *args, **kwargs):
     await state.update_data(title=message.text)
     await state.set_state(StepsForm.GET_wish_short_description)
     await message.answer(
-        text=f"Теперь можешь ввести короткое описание для твоего подарка\n\nГде его можно найти или как он должен выглядеть.\n\nК примеру: \n{hcode('Я хочу получить от Тайного Санты стеклянный снежный шар с елкой внутри и ...')}",
+        text=f"Теперь можешь ввести короткое описание для твоего подарка\n\nГде его можно найти или как он должен выглядеть.\n\nЕсли запустил действие случайно то можешь отменить командой \n/cancel\n\nК примеру: \n{hcode('Я хочу получить от Тайного Санты стеклянный снежный шар с елкой внутри и ...')}",
         reply_markup=get_reply_wish_next_step_markup(),
     )
 
@@ -57,7 +57,7 @@ async def get_wish_short_description(
 
     await state.set_state(StepsForm.GET_wish_link)
     await message.answer(
-        text=f"Если это вещь с интернета можешь скинуть {hbold('Cсылку')} на подарок чтобы твой Cанта взял его тебе или посмотрел как подарок должен выглядеть\n\nЕсли запустил действие случайно то можешь отменить командой \n/cancel"
+        text=f"Если это вещь с интернета можешь скинуть {hbold('Cсылку')} на подарок чтобы твой Cанта взял его тебе или посмотрел как подарок должен выглядеть:"
     )
 
 
