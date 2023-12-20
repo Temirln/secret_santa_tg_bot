@@ -158,7 +158,7 @@ async def message_delete_wish_handler(message: Message, *args, **kwargs):
 async def get_price_chat(message: Message, bot: Bot, state: FSMContext):
 
     await state.update_data(price=message.text)
-    await message.answer(
+    await message.reply(
         text="""
 Напишите правило: день, место или каким образом будет передаваться подарки. Можете тут же добавить дополнительную информацию. Что можно, а что нельзя дарить. И прочие детали игры.
 
