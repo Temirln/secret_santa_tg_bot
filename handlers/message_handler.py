@@ -155,6 +155,7 @@ async def message_delete_wish_handler(message: Message, *args, **kwargs):
     )
 
 
+
 async def get_price_chat(message: Message, bot: Bot, state: FSMContext):
 
     await state.update_data(price=message.text)
