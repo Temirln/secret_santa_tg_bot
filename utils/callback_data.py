@@ -12,13 +12,11 @@ class WishInfo(CallbackData, prefix="wish_id"):
 
 class GiftReadyInfo(CallbackData, prefix="wish_id"):
     id: int
-    title: str
     chat: int
     receiver: int
 
 
 class GiftReceivedInfo(CallbackData, prefix="gift_id"):
-    # id: int
     wish: int
     chat: int
     santa: int
