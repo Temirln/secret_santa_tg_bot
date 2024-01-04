@@ -14,7 +14,7 @@ def arrange_secret_santa(user_ids):
     random.shuffle(shuffled_ids)
 
     # Arrange in pairs (A gives to B, B gives to C, ..., last gives to A)
-    pairings =  {
+    pairings = {
         shuffled_ids[i]: shuffled_ids[(i + 1) % len(shuffled_ids)]
         for i in range(len(shuffled_ids))
     }
