@@ -54,12 +54,10 @@ async def get_wish_short_description(
 @check_private
 async def get_wish_link(message: Message, bot: Bot, state: FSMContext, *args, **kwargs):
     if message.text.strip().title() != "Пропустить Действие ⏭":
-        # state.set_state(StepsForm.FINISH_wish)
         url_pattern = re.compile(
             r"(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})"
         )
         wish_link = message.text
-        print(url_pattern.search(wish_link))
         if not url_pattern.search(wish_link):
             await message.reply(text="Ты прислал не ссылку")
             return
