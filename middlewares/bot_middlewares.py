@@ -11,15 +11,11 @@ class CheckAdminMiddleware(BaseMiddleware):
         event: Message,
         data: Dict[str, Any],
     ) -> Any:
-
-        # await event.answer("Middleware")
         if event.chat.type != "private":
             if event.chat.type != "supergroup":
                 await event.answer(
                     "Чтобы пользоваться командами бота нужно дать разрешение на чтение и отправку сообщении"
                 )
                 return
-
-        # print("EVENT:", event)
 
         return await handler(event, data)

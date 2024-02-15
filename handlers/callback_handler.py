@@ -173,7 +173,7 @@ async def delete_wish_callback(
         )
 
         await bot.send_message(
-            event.tg_santa_id,
+            chat_id=event.tg_santa_id,
             text=wishes_text,
             parse_mode="html",
             reply_markup=create_inline_wish_buttons(wishes),

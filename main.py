@@ -39,7 +39,7 @@ from handlers.message_handler import (
     get_wish_title,
     message_add_wish_handler,
     message_delete_wish_handler,
-    # echo_handler,
+    echo_handler,
     get_price_chat,
     get_description_chat,
 )
@@ -54,11 +54,13 @@ from utils.callback_data import (
 
 from utils.commands import set_commands
 from utils.stateforms import StepsForm
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
 async def start_bot(bot: Bot):
     await set_commands(bot)
     await setup_db()
+    # bot.answer_callback_query()
     await bot.send_message(ADMIN_ID, text="Бот Запущен")
 
 
@@ -66,8 +68,11 @@ async def shutdown_bot(bot: Bot):
     await bot.send_message(ADMIN_ID, text="Бот Остановлен")
 
 
+async def cron_message(bot: Bot):
+    await bot.send_message(chat_id="@asdtnma", text="Scheduled message")
+
+
 async def main() -> None:
-    # Initialize Bot instance with a default parse mode which will be passed to all API calls
     bot = Bot(BOT_TOKEN, parse_mode=ParseMode.HTML)
     dp = Dispatcher()
 
@@ -78,12 +83,9 @@ async def main() -> None:
     dp.message.middleware.register(ChatActionMiddleware())
     dp.message.middleware.register(CheckAdminMiddleware())
 
-    dp.my_chat_member.register(
-        chat_member_update_handler, ChatMemberUpdatedFilter(IS_NOT_MEMBER >> MEMBER)
-    )
     dp.my_chat_member.register(chat_member_update_handler)
 
-    # Commands
+    ## Commands
 
     # Standart commands
     dp.message.register(command_start_handler, Command(commands=["start"]))
@@ -118,7 +120,7 @@ async def main() -> None:
         F.text == "Удалить Подарок ❌",
         F.chat.type == "private",
     )
-    # dp.message.register(echo_handler)
+    dp.message.register(echo_handler)
 
     # FSM
     dp.message.register(get_wish_title, StepsForm.GET_wish_title)

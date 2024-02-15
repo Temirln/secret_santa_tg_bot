@@ -55,7 +55,7 @@ async def get_santa_event(session, giver_id):
                 Events.tg_santa_id == giver_id,
             )
             result = await session.execute(stmt)
-            return result.scalars().fetchall()
+            return result.scalars()
 
 
 async def get_receiver_event(session, receiver_id):
@@ -64,7 +64,7 @@ async def get_receiver_event(session, receiver_id):
             stmt = select(Events).where(Events.tg_receiver_id == receiver_id)
 
             result = await session.execute(stmt)
-            return result.scalars().fetchall()
+            return result.scalars()
 
 
 async def get_chat_event(session, chat_id):
