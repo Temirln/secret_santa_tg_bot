@@ -22,14 +22,14 @@ from utils.commands import set_commands
 async def start_bot(bot: Bot):
     await set_commands(bot)
     await setup_db()
-    await bot.set_webhook(
-        f"{BASE_WEBHOOK_URL}{WEBHOOK_PATH}", secret_token=WEBHOOK_SECRET
-    )
+    # await bot.set_webhook(
+    #     f"{BASE_WEBHOOK_URL}{WEBHOOK_PATH}", secret_token=WEBHOOK_SECRET
+    # )
     await bot.send_message(ADMIN_ID, text="Бот Запущен")
 
 
 async def shutdown_bot(bot: Bot):
-    await bot.delete_webhook(drop_pending_updates=True)
+    # await bot.delete_webhook(drop_pending_updates=True)
     await bot.send_message(ADMIN_ID, text="Бот Остановлен")
 
 
@@ -47,11 +47,11 @@ async def main() -> None:
 
     dp.include_router(standart_commands_router)
     dp.include_router(group_commands_router)
-    dp.include_router(messages_router)
     dp.include_router(private_commands_router)
     dp.include_router(states_router)
     dp.include_router(callbacks_router)
     dp.include_router(actions_router)
+    dp.include_router(messages_router)
 
     # Bot Starts
     try:

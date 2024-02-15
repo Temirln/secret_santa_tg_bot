@@ -36,13 +36,13 @@ async def message_delete_wish_handler(message: Message, *args, **kwargs):
     )
 
 
-@messages_router.message()
-async def echo_handler(message: Message, bot: Bot) -> None:
-    print("GIF:", message.animation)
-    print("GROUP:", message.chat.type)
-    print("GROUP_ID:", message.chat.id)
+# @messages_router.message()
+# async def echo_handler(message: Message, bot: Bot) -> None:
+#     print("GIF:", message.animation)
+#     print("GROUP:", message.chat.type)
+#     print("GROUP_ID:", message.chat.id)
 
-    try:
-        await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.answer("Nice try!")
+#     try:
+#         await message.send_copy(chat_id=message.chat.id)
+#     except TypeError:
+#         await message.answer("Nice try!")
