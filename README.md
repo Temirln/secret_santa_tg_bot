@@ -14,12 +14,20 @@ You need to create and configure your .env file in root directory
 
     BOT_TOKEN=
     ADMIN_ID=
+
     API_ID=
     API_HASH=
+    
     POSTGRES_DB=
     POSTGRES_USER=
     POSTGRES_PASSWORD=
     POSTGRES_HOST=
+
+    WEB_SERVER_HOST=
+    WEB_SERVER_PORT=
+    WEBHOOK_PATH=
+    WEBHOOK_SECRET=
+    BASE_WEBHOOK_URL=
 
 Finally, you can run Project from root directory and see the Results
 

@@ -8,7 +8,6 @@ from aiogram.types import (
 
 
 async def set_commands(bot: Bot):
-
     standart_commands = [
         BotCommand(command="start", description="Запуск бота"),
         BotCommand(command="help", description="Список всех комманд"),

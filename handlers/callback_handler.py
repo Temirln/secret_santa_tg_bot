@@ -1,4 +1,4 @@
-from aiogram import Bot
+from aiogram import Bot, F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.markdown import hbold
@@ -29,7 +29,10 @@ from utils.callback_data import (
 )
 from utils.stateforms import StepsForm
 
+callbacks_router = Router(name=__name__)
 
+
+@callbacks_router.callback_query(F.data == "participate")
 async def participate_callback(call: CallbackQuery, bot: Bot):
     chat_id = call.message.chat.id
 
@@ -93,10 +96,10 @@ async def participate_callback(call: CallbackQuery, bot: Bot):
             )
 
 
+@callbacks_router.callback_query(GroupInfo.filter())
 async def not_participate_callback(
     call: CallbackQuery, bot: Bot, callback_data: GroupInfo
 ):
-
     user_tg_id = call.from_user.id
     chat_id = callback_data.id
 
@@ -130,6 +133,7 @@ async def not_participate_callback(
         await call.message.delete()
 
 
+@callbacks_router.callback_query(WishInfo.filter())
 async def delete_wish_callback(
     call: CallbackQuery, bot: Bot, callback_data: WishInfo, state: FSMContext
 ):
@@ -180,6 +184,7 @@ async def delete_wish_callback(
         )
 
 
+@callbacks_router.callback_query(ReceiverInfo.filter())
 async def send_receiver_notification_callback(
     call: CallbackQuery, callback_data: ReceiverInfo, bot: Bot
 ):
@@ -211,6 +216,7 @@ async def send_receiver_notification_callback(
     await update_event_receiveer_giver(async_session_maker, receiver_id, giver_id, chat)
 
 
+@callbacks_router.callback_query(GiftReadyInfo.filter())
 async def receiver_gift_ready_callback(
     call: CallbackQuery, callback_data: GiftReadyInfo, bot: Bot
 ):
@@ -233,6 +239,7 @@ async def receiver_gift_ready_callback(
     await bot.pin_chat_message(chat_id=receiver_id, message_id=msg.message_id)
 
 
+@callbacks_router.callback_query(GiftReceivedInfo.filter())
 async def gift_received_callback(
     call: CallbackQuery, callback_data: GiftReceivedInfo, bot: Bot
 ):
