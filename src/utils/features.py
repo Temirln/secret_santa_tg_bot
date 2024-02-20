@@ -2,7 +2,7 @@ import random
 
 from pyrogram import Client, enums
 
-from config import API_HASH, API_ID, BOT_TOKEN
+from ..config import API_HASH, API_ID, BOT_TOKEN
 
 
 async def get_all_members(chat_id: int, emojis: list):

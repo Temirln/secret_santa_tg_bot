@@ -1,9 +1,9 @@
 # from aiogram import Bot
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from db.crud.participants import get_participant
-from db.db import async_session_maker
-from utils.callback_data import (
+from ..db.crud.participants import get_participant
+from ..db.db import async_session_maker
+from ..utils.callback_data import (
     GiftReadyInfo,
     GiftReceivedInfo,
     GroupInfo,

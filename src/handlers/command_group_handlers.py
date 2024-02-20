@@ -4,15 +4,15 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 
-from constants.constant_text import SANTA_EMOJIS
-from db.crud.event import delete_group_events, get_chat_event
-from db.crud.participants import delete_chat_participants, get_chat_participants
-from db.crud.telegram_chat import add_group_chat, get_group_chat
-from db.db import async_session_maker
-from keyboards.inline_k import get_inline_button
-from utils.decorators import check_admin, check_chat
-from utils.features import get_all_members
-from utils.stateforms import StepsForm
+from ..constants.constant_text import SANTA_EMOJIS
+from ..db.crud.event import delete_group_events, get_chat_event
+from ..db.crud.participants import delete_chat_participants, get_chat_participants
+from ..db.crud.telegram_chat import add_group_chat, get_group_chat
+from ..db.db import async_session_maker
+from ..keyboards.inline_k import get_inline_button
+from ..utils.decorators import check_admin, check_chat
+from ..utils.features import get_all_members
+from ..utils.stateforms import StepsForm
 
 group_commands_router = Router(name=__name__)
 

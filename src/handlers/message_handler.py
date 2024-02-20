@@ -2,11 +2,11 @@ from aiogram import Bot, F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from db.crud.wishlist import get_user_wishes
-from db.db import async_session_maker
-from keyboards.inline_k import get_inline_wishes_list
-from utils.decorators import check_private
-from utils.stateforms import StepsForm
+from ..db.crud.wishlist import get_user_wishes
+from ..db.db import async_session_maker
+from ..keyboards.inline_k import get_inline_wishes_list
+from ..utils.decorators import check_private
+from ..utils.stateforms import StepsForm
 
 messages_router = Router(name=__name__)
 

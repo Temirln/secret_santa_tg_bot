@@ -2,12 +2,12 @@ from aiogram import Bot, Router
 from aiogram.types import ChatMemberUpdated
 from aiogram.utils.markdown import hbold
 
-from constants.constant_text import EMOJIS, START_TEXT_GROUP
-from db.crud.event import delete_group_events
-from db.crud.participants import delete_chat_participants
-from db.crud.telegram_chat import add_group_chat, get_group_chat
-from db.db import async_session_maker
-from utils.features import get_all_members
+from ..constants.constant_text import EMOJIS, START_TEXT_GROUP
+from ..db.crud.event import delete_group_events
+from ..db.crud.participants import delete_chat_participants
+from ..db.crud.telegram_chat import add_group_chat, get_group_chat
+from ..db.db import async_session_maker
+from ..utils.features import get_all_members
 
 actions_router = Router()
 

@@ -4,12 +4,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.utils.markdown import hbold
 
-from db.crud.event import get_santa_event
-from db.crud.wishlist import get_user_wishes
-from db.db import async_session_maker
-from keyboards.inline_k import create_inline_wish_buttons, get_inline_receivers
-from keyboards.reply_k import get_reply_wish_list_markup
-from utils.decorators import check_private
+from ..db.crud.event import get_santa_event
+from ..db.crud.wishlist import get_user_wishes
+from ..db.db import async_session_maker
+from ..keyboards.inline_k import create_inline_wish_buttons, get_inline_receivers
+from ..keyboards.reply_k import get_reply_wish_list_markup
+from ..utils.decorators import check_private
 
 private_commands_router = Router(name=__name__)
 

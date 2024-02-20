@@ -1,8 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
-from db.models import TelegramUsers
-
 from ..models import TelegramUsers
 
 

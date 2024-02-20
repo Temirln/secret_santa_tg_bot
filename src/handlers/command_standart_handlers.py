@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 
-from constants.constant_text import (
+from ..constants.constant_text import (
     EMOJIS,
     FAQ_TEXT,
     HELP_TEXT,
@@ -11,10 +11,10 @@ from constants.constant_text import (
     START_TEXT_GROUP,
     START_TEXT_PRIVATE,
 )
-from db.crud.telegram_chat import add_group_chat, get_group_chat
-from db.crud.telegram_user import add_tg_user, get_tg_user
-from db.db import async_session_maker
-from utils.features import get_all_members
+from ..db.crud.telegram_chat import add_group_chat, get_group_chat
+from ..db.crud.telegram_user import add_tg_user, get_tg_user
+from ..db.db import async_session_maker
+from ..utils.features import get_all_members
 
 standart_commands_router = Router(name=__name__)
 

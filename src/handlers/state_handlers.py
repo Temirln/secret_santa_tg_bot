@@ -5,18 +5,18 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold, hcode, hitalic, hlink
 
-from db.crud.event import arrange_all_giver_receiver, get_receiver_event
-from db.crud.participants import get_chat_participants
-from db.crud.wishlist import add_user_wish, get_user_wishes
-from db.db import async_session_maker
-from keyboards.inline_k import create_inline_wish_buttons
-from keyboards.reply_k import (
+from ..db.crud.event import arrange_all_giver_receiver, get_receiver_event
+from ..db.crud.participants import get_chat_participants
+from ..db.crud.wishlist import add_user_wish, get_user_wishes
+from ..db.db import async_session_maker
+from ..keyboards.inline_k import create_inline_wish_buttons
+from ..keyboards.reply_k import (
     get_reply_wish_list_markup,
     get_reply_wish_next_step_markup,
 )
-from utils.decorators import check_private
-from utils.shuffle_user import arrange_secret_santa
-from utils.stateforms import StepsForm
+from ..utils.decorators import check_private
+from ..utils.shuffle_user import arrange_secret_santa
+from ..utils.stateforms import StepsForm
 
 states_router = Router(name=__name__)
 

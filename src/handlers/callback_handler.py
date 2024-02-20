@@ -3,31 +3,31 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.markdown import hbold
 
-from db.crud.event import (
+from ..db.crud.event import (
     get_chat_event,
     get_receiver_event,
     get_santa_chat_event,
     update_event_receiveer_giver,
 )
-from db.crud.participants import add_participant, delete_participant, get_participant
-from db.crud.telegram_user import get_tg_user
-from db.crud.wishlist import delete_user_wish, get_user_wishes, update_user_wish
-from db.db import async_session_maker
-from keyboards.inline_k import (
+from ..db.crud.participants import add_participant, delete_participant, get_participant
+from ..db.crud.telegram_user import get_tg_user
+from ..db.crud.wishlist import delete_user_wish, get_user_wishes, update_user_wish
+from ..db.db import async_session_maker
+from ..keyboards.inline_k import (
     create_inline_wish_buttons,
     get_inline_button_not_participate,
     get_inline_gift_list,
     get_inline_gift_received,
 )
-from keyboards.reply_k import get_reply_wish_list_markup
-from utils.callback_data import (
+from ..keyboards.reply_k import get_reply_wish_list_markup
+from ..utils.callback_data import (
     GiftReadyInfo,
     GiftReceivedInfo,
     GroupInfo,
     ReceiverInfo,
     WishInfo,
 )
-from utils.stateforms import StepsForm
+from ..utils.stateforms import StepsForm
 
 callbacks_router = Router(name=__name__)
 
